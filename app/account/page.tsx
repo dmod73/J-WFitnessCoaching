@@ -7,9 +7,10 @@ export default async function AccountPage() {
   if (!user) {
     return (
       <main style={{ display: 'grid', placeItems: 'center', minHeight: '60dvh' }}>
-        <div style={{ display: 'grid', gap: 12 }}>
+        <div style={{ display: 'grid', gap: 12, textAlign: 'center' }}>
           <p>No has iniciado sesión.</p>
           <Link href='/sign-in'>Ir a iniciar sesión</Link>
+          <Link href='/sign-up'>Crear una cuenta</Link>
         </div>
       </main>
     );

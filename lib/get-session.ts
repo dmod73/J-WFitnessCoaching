@@ -22,15 +22,11 @@ export async function getSessionWithProfile(): Promise<SessionResult> {
     return { user: null, profile: null };
   }
 
-  const { data: profile, error } = await supabase
+  const { data: profile } = await supabase
     .from('profiles')
     .select('id,email,role')
     .eq('id', user.id)
-    .single<Profile>();
+    .maybeSingle<Profile>();
 
-  if (error) {
-    return { user, profile: null };
-  }
-
-  return { user, profile };
+  return { user, profile: profile ?? null };
 }

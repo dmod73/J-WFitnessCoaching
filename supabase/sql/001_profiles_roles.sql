@@ -50,12 +50,15 @@ create trigger on_auth_user_created
 -- Row Level Security
 alter table public.profiles enable row level security;
 
+drop policy if exists "read own profile" on public.profiles;
 create policy "read own profile" on public.profiles
   for select using (auth.uid() = id);
 
+drop policy if exists "update own profile" on public.profiles;
 create policy "update own profile" on public.profiles
   for update using (auth.uid() = id);
 
+drop policy if exists "admin read all" on public.profiles;
 create policy "admin read all" on public.profiles
   for select using (
     exists (
@@ -64,6 +67,7 @@ create policy "admin read all" on public.profiles
     )
   );
 
+drop policy if exists "admin update all" on public.profiles;
 create policy "admin update all" on public.profiles
   for update using (
     exists (
@@ -72,15 +76,7 @@ create policy "admin update all" on public.profiles
     )
   );
 
--- RPC para promover a admin (usar Service Role)
-create or replace function public.promote_to_admin(target_email text)
-returns void
-language plpgsql
-security definer
-set search_path = public as 
-begin
-  update public.profiles
-  set role = 'admin', updated_at = now()
-  where email = target_email;
-end;
-;
+-- Semilla de admin: ajusta el correo si es necesario
+update public.profiles
+set role = 'admin', updated_at = now()
+where email = 'ortizdiazdeanm@gmail.com';
