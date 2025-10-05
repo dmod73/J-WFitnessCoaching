@@ -416,3 +416,9 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+.next
+.vercel
+.turbo
+dist
+.env*
+!.env.example
