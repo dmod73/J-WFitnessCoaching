@@ -1,8 +1,9 @@
-﻿import { cookies } from 'next/headers';
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { createServerClient } from '@supabase/ssr';
+import { resolveAnonKey, resolveSupabaseUrl } from './supabase-env';
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const SUPABASE_URL = resolveSupabaseUrl();
+const SUPABASE_ANON_KEY = resolveAnonKey();
 
 export async function createClientServer() {
   const cookieStore = await cookies();
@@ -12,11 +13,11 @@ export async function createClientServer() {
       get(name: string) {
         return cookieStore.get(name)?.value;
       },
-      set(_name: string, _value: string, _options: CookieOptions) {
-        // No-op in server components; route handlers should manage cookies directly.
+      set() {
+        // Los componentes server solo necesitan lectura de cookies.
       },
-      remove(_name: string, _options: CookieOptions) {
-        // No-op in server components; route handlers should manage cookies directly.
+      remove() {
+        // Los componentes server solo necesitan lectura de cookies.
       },
     },
   });

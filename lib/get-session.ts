@@ -1,5 +1,6 @@
-﻿import type { User } from '@supabase/supabase-js';
+import type { User } from '@supabase/supabase-js';
 import { createClientServer } from './supabase-server';
+import { getAdminClient } from './supabase-admin';
 
 type Profile = {
   id: string;
@@ -28,5 +29,21 @@ export async function getSessionWithProfile(): Promise<SessionResult> {
     .eq('id', user.id)
     .maybeSingle<Profile>();
 
-  return { user, profile: profile ?? null };
+  if (profile) {
+    return { user, profile };
+  }
+
+  // Fallback con Service Role (por ejemplo, justo despu?s de promocionar un admin)
+  const adminClient = getAdminClient();
+  const { data: adminProfile, error: adminError } = await adminClient
+    .from('profiles')
+    .select('id,email,role')
+    .eq('id', user.id)
+    .maybeSingle<Profile>();
+
+  if (adminError) {
+    console.error('[getSessionWithProfile] Fallback con service role fall?:', adminError.message);
+  }
+
+  return { user, profile: adminProfile ?? null };
 }
