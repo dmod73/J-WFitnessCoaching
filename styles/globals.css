@@ -178,6 +178,9 @@ nav {
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 10px;
+  width: 42px;
+  height: 42px;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 6px;
@@ -185,13 +188,16 @@ nav {
   transition: border 0.2s ease, background 0.2s ease;
 }
 
+
 .nav-toggle span {
   display: block;
-  width: 20px;
+  width: 22px;
   height: 2px;
+  border-radius: 9999px;
   background: var(--color-text);
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
+
 
 .nav-toggle[aria-expanded='true'] span:nth-child(1) {
   transform: translateY(6px) rotate(45deg);
@@ -207,12 +213,14 @@ nav {
 
 .nav-mobile {
   display: none;
+  width: 100%;
   background: linear-gradient(180deg, rgba(12, 15, 20, 0.96), rgba(12, 15, 20, 0.85));
   border-bottom: 1px solid rgba(126, 140, 162, 0.18);
   overflow: hidden;
   max-height: 0;
   transition: max-height 0.3s ease;
 }
+
 
 .nav-mobile--open {
   max-height: 600px;
@@ -630,16 +638,36 @@ form.auth-form,
   }
 
   .nav-toggle {
-    display: inline-flex;
-  }
+  display: none;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 10px;
+  width: 42px;
+  height: 42px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: border 0.2s ease, background 0.2s ease;
+}
+
 
   .nav-actions-desktop {
     display: none;
   }
 
   .nav-mobile {
-    display: block;
-  }
+  display: none;
+  width: 100%;
+  background: linear-gradient(180deg, rgba(12, 15, 20, 0.96), rgba(12, 15, 20, 0.85));
+  border-bottom: 1px solid rgba(126, 140, 162, 0.18);
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease;
+}
+
 
   .nav-mobile-inner {
     padding: 18px 20px 22px;
@@ -794,10 +822,7 @@ form.auth-form,
   font-weight: 500;
 }
 
-.admin-table th,
-.admin-table td {
-  padding: 12px 10px;
-}
+.admin-table th,\n.admin-table td {\n  padding: 12px 10px;\n  word-break: break-word;\n  white-space: normal;\n}\n
 
 .admin-table tbody tr {
   border-top: 1px solid rgba(124, 136, 152, 0.15);
@@ -945,4 +970,6 @@ form.auth-form,
     padding: 20px;
   }
 }
+
+
 
