@@ -1,6 +1,7 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { getSessionWithProfile } from '@/lib/get-session';
 import { getAdminClient } from '@/lib/supabase-admin';
+import { getCartSummary } from '@/lib/cart';
 import { UpdateEmailForm } from '@/components/UpdateEmailForm';
 import { UpdatePasswordForm } from '@/components/UpdatePasswordForm';
 import { AdminUsersPanel, AdminUserRow } from '@/components/AdminUsersPanel';
@@ -30,6 +31,8 @@ export default async function AccountPage() {
   }
 
   const roleLabel = profile?.role === 'admin' ? 'Administrador' : 'Miembro';
+  const cartSummary = await getCartSummary(user.id);
+  const cartLabel = `Ver carrito (${cartSummary.itemCount})`;
   let adminUsers: AdminUserRow[] = [];
 
   if (profile?.role === 'admin') {
@@ -52,7 +55,7 @@ export default async function AccountPage() {
               <p className="link-muted" style={{ margin: 0 }}>Rol actual: {roleLabel}</p>
             </div>
             <Link className="button secondary" href="/cart">
-              Ver carrito (0)
+              {cartLabel}
             </Link>
           </div>
         </section>

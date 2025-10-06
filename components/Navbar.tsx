@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -21,9 +21,18 @@ const protectedLinks = [
 
 interface NavbarProps {
   session: NavbarSession | null;
+  cartCount: number;
 }
 
-export function Navbar({ session }: NavbarProps) {
+function formatCartCount(count: number) {
+  if (count > 99) {
+    return '99+';
+  }
+
+  return String(count ?? 0);
+}
+
+export function Navbar({ session, cartCount }: NavbarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -38,6 +47,7 @@ export function Navbar({ session }: NavbarProps) {
   }
 
   const avatarLetter = session?.email?.charAt(0)?.toUpperCase() ?? 'J';
+  const cartDisplay = formatCartCount(cartCount);
 
   return (
     <nav>
@@ -55,9 +65,9 @@ export function Navbar({ session }: NavbarProps) {
               </li>
             ))}
           </ul>
-          <Link className="cart-chip" href="/cart">
+          <Link className="cart-chip" href="/cart" aria-label={`Ver carrito (${cartDisplay} cursos)`}>
             <span>Carrito</span>
-            <span className="cart-count">0</span>
+            <span className="cart-count">{cartDisplay}</span>
           </Link>
           {session ? (
             <div className="avatar-wrapper">

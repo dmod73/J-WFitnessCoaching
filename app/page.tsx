@@ -1,6 +1,9 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { ReviewsCarousel } from '@/components/ReviewsCarousel';
 import { HeroSessionCarousel } from '@/components/HeroSessionCarousel';
+import { CourseCatalog, type CourseCatalogItem } from '@/components/CourseCatalog';
+import { createClientServer } from '@/lib/supabase-server';
+import { getSessionWithProfile } from '@/lib/get-session';
 
 const features = [
   {
@@ -17,29 +20,26 @@ const features = [
   }
 ];
 
-const tiers = [
-  {
-    title: 'Starter',
-    price: 'USD 129',
-    description: 'Ideal para retomar habitos desde casa o el gym.',
-    items: ['Plan de entrenamiento mensual', 'Guia de alimentacion flexible', 'Feedback quincenal por chat']
-  },
-  {
-    title: 'Elite',
-    price: 'USD 249',
-    description: 'Coaching premium con metricas avanzadas y contacto prioritario.',
-    highlighted: true,
-    items: ['Plan actualizado cada 2 semanas', 'Chequeos semanales 1:1', 'Integracion con wearables']
-  },
-  {
-    title: 'Team',
-    price: 'USD 399',
-    description: 'Pensado para parejas o grupos pequenos que buscan accountability conjunta.',
-    items: ['Rutinas sincronizadas', 'Retos mensuales exclusivos', 'Acceso a workshops privados']
-  }
-];
+async function getActiveCourses(): Promise<CourseCatalogItem[]> {
+  const supabase = await createClientServer();
+  const { data, error } = await supabase
+    .from('courses')
+    .select('id, slug, name, description, price_cents, currency, delivery_html_url, thumbnail_url')
+    .eq('is_active', true)
+    .order('price_cents', { ascending: true });
 
-export default function Page() {
+  if (error) {
+    console.error('[home] Error al cargar cursos:', error.message);
+    return [];
+  }
+
+  return data ?? [];
+}
+
+export default async function Page() {
+  const [courses, sessionResult] = await Promise.all([getActiveCourses(), getSessionWithProfile()]);
+  const isAuthenticated = Boolean(sessionResult.user);
+
   return (
     <main>
       <section className="section" style={{ paddingTop: 120 }}>
@@ -95,35 +95,12 @@ export default function Page() {
               Cada plan incluye app movil, biblioteca de movimiento y comunidad privada. Mejora la fuerza, la
               recomposicion corporal y consolida habitos que lideran tu vida.
             </p>
+            <p style={{ color: 'var(--color-muted)', maxWidth: 720, margin: '0 auto', lineHeight: 1.6 }}>
+              Agrega tus cursos al carrito y en la siguiente etapa conectaremos Stripe para enviar automaticamente el recibo
+              con el enlace HTML personalizado.
+            </p>
           </div>
-          <div className="card-grid">
-            {tiers.map((tier) => (
-              <article
-                key={tier.title}
-                className="feature-card"
-                style={{
-                  borderColor: tier.highlighted ? 'rgba(127, 86, 217, 0.6)' : undefined,
-                  boxShadow: tier.highlighted ? '0 22px 45px rgba(127, 86, 217, 0.22)' : undefined,
-                }}
-              >
-                <div style={{ display: 'grid', gap: 12 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                    <h3 style={{ margin: 0 }}>{tier.title}</h3>
-                    <span style={{ fontWeight: 600 }}>{tier.price}</span>
-                  </div>
-                  <p style={{ color: 'var(--color-muted)', margin: 0 }}>{tier.description}</p>
-                  <ul style={{ paddingLeft: 20, margin: '10px 0 20px', color: 'var(--color-muted)', lineHeight: 1.6 }}>
-                    {tier.items.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-                <Link className="button primary" href="/sign-up">
-                  Aplicar ahora
-                </Link>
-              </article>
-            ))}
-          </div>
+          <CourseCatalog courses={courses} isAuthenticated={isAuthenticated} />
         </div>
       </section>
 
