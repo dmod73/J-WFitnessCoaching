@@ -663,35 +663,6 @@ form.auth-form,
     padding: 28px;
   }
 }
-.nav-actions {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .nav-cta {
-    width: 100%;
-    justify-content: center;
-  }
-
-  form.auth-form,
-  .security-card,
-  .imc-form {
-    padding: 28px 24px;
-  }
-
-  .section {
-    padding: 64px 0;
-  }
-
-  .hero-copy {
-    font-size: 1rem;
-  }
-
-  .hero-carousel {
-    padding: 28px;
-  }
-}
-
 /* === Responsive helpers === */
 .button-row {
   display: flex;
@@ -974,3 +945,4 @@ form.auth-form,
     padding: 20px;
   }
 }
+
