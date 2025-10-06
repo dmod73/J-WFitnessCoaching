@@ -45,7 +45,7 @@ export default async function AccountPage() {
   }
 
   return (
-    <main className="section">
+    <main className="section account-page">
       <div className="container account-container">
         <section className="feature-card account-overview">
           <div className="account-overview-header">
@@ -102,3 +102,4 @@ export default async function AccountPage() {
     </main>
   );
 }
+
