@@ -11,13 +11,13 @@ export default async function CartPage() {
   if (!user) {
     return (
       <main className="section" style={{ display: 'grid', placeItems: 'center', minHeight: 'calc(100vh - 200px)' }}>
-        <div className="feature-card" style={{ width: 'min(520px, 100%)', textAlign: 'center', display: 'grid', gap: 18 }}>
+        <div className="feature-card cart-empty-card">
           <span className="section-title">Carrito</span>
-          <h1 style={{ margin: 0 }}>Tus cursos guardados</h1>
+          <h1 className="cart-heading">Tus cursos guardados</h1>
           <p className="link-muted" style={{ margin: 0 }}>
             Inicia sesion para ver los programas que agregaste y completar la compra.
           </p>
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+          <div className="button-row button-row--center">
             <Link className="button primary" href="/sign-in">
               Iniciar sesion
             </Link>
@@ -35,13 +35,13 @@ export default async function CartPage() {
   if (!cart.items.length) {
     return (
       <main className="section" style={{ display: 'grid', placeItems: 'center', minHeight: 'calc(100vh - 200px)' }}>
-        <div className="feature-card" style={{ width: 'min(520px, 100%)', display: 'grid', gap: 18 }}>
+        <div className="feature-card cart-empty-card">
           <span className="section-title">Carrito</span>
-          <h1 style={{ margin: 0 }}>Tus cursos guardados</h1>
+          <h1 className="cart-heading">Tus cursos guardados</h1>
           <p className="link-muted" style={{ margin: 0 }}>
             Aun no agregaste programas. Cuando selecciones un plan lo veras aqui listo para completar el pago.
           </p>
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div className="button-row button-row--center">
             <Link className="button primary" href="/#programas">
               Explorar programas
             </Link>
@@ -55,11 +55,11 @@ export default async function CartPage() {
   }
 
   return (
-    <main className="section" style={{ display: 'grid', gap: 36 }}>
-      <div className="container" style={{ display: 'grid', gap: 24, maxWidth: 720 }}>
-        <div className="feature-card" style={{ display: 'grid', gap: 12 }}>
+    <main className="section">
+      <div className="container cart-container">
+        <div className="feature-card cart-intro">
           <span className="section-title">Carrito</span>
-          <h1 style={{ margin: 0 }}>Tus cursos guardados</h1>
+          <h1 className="cart-heading">Tus cursos guardados</h1>
           <p className="link-muted" style={{ margin: 0 }}>
             Confirma tu seleccion y en la siguiente fase conectaremos Stripe para procesar el pago en linea.
           </p>
@@ -67,7 +67,7 @@ export default async function CartPage() {
 
         <CartItemsList items={cart.items} currency={cart.currency} totalCents={cart.totalCents} />
 
-        <div className="feature-card" style={{ display: 'grid', gap: 12 }}>
+        <div className="feature-card cart-summary">
           <h2 style={{ margin: 0 }}>Checkout con Stripe (proximamente)</h2>
           <p className="link-muted" style={{ margin: 0 }}>
             Estamos preparando la integracion para que puedas pagar con tarjeta y recibir automaticamente tu recibo con el link HTML del curso.
@@ -75,7 +75,7 @@ export default async function CartPage() {
           <button className="button primary" type="button" disabled style={{ opacity: 0.6 }}>
             Finalizar compra con Stripe
           </button>
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <div className="button-row">
             <Link className="button secondary" href="/#programas">
               Seguir explorando cursos
             </Link>

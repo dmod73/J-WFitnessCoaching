@@ -17,7 +17,7 @@ export default async function AccountPage() {
         <div className="feature-card" style={{ textAlign: 'center', gap: 16 }}>
           <h2>Tu sesion expiro</h2>
           <p className="link-muted">Ingresa nuevamente para ver tus planes y actividades.</p>
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
+          <div className="button-row button-row--center">
             <Link className="button primary" href="/sign-in">
               Iniciar sesion
             </Link>
@@ -45,51 +45,47 @@ export default async function AccountPage() {
   }
 
   return (
-    <main className="section" style={{ display: 'grid', gap: 36 }}>
-      <div className="container" style={{ display: 'grid', gap: 32 }}>
-        <section className="feature-card" style={{ display: 'grid', gap: 16 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+    <main className="section">
+      <div className="container account-container">
+        <section className="feature-card account-overview">
+          <div className="account-overview-header">
             <div>
               <span className="section-title">Perfil activo</span>
-              <h1 style={{ margin: '10px 0 4px' }}>{profile?.email ?? user.email ?? 'Sin email'}</h1>
+              <h1 className="account-heading">{profile?.email ?? user.email ?? 'Sin email'}</h1>
               <p className="link-muted" style={{ margin: 0 }}>Rol actual: {roleLabel}</p>
             </div>
-            <Link className="button secondary" href="/cart">
-              {cartLabel}
-            </Link>
+            <div className="button-row account-overview-actions">
+              <Link className="button secondary" href="/cart">
+                {cartLabel}
+              </Link>
+            </div>
           </div>
         </section>
 
-        <section id="seguridad" className="feature-card" style={{ display: 'grid', gap: 24 }}>
-          <div>
+        <section id="seguridad" className="feature-card account-security">
+          <div className="account-section-heading">
             <h2 style={{ margin: 0 }}>Seguridad</h2>
             <p className="link-muted" style={{ marginTop: 6 }}>
               Actualiza tus credenciales para mantener tu cuenta protegida.
             </p>
           </div>
-          <div style={{ display: 'grid', gap: 18, gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
+          <div className="account-security-grid">
             <UpdateEmailForm initialEmail={profile?.email ?? user.email ?? ''} />
             <UpdatePasswordForm />
           </div>
         </section>
 
-        <section id="actividades" className="feature-card" style={{ display: 'grid', gap: 16 }}>
-          <div>
+        <section id="actividades" className="feature-card account-activity">
+          <div className="account-section-heading">
             <h2 style={{ margin: 0 }}>Tus actividades</h2>
             <p className="link-muted" style={{ marginTop: 6 }}>
               Aqui veras compras, sesiones y metricas de progreso cuando tengas movimiento.
             </p>
           </div>
-          <div style={{
-            border: '1px dashed rgba(124, 136, 152, 0.4)',
-            borderRadius: 16,
-            padding: '24px',
-            textAlign: 'center',
-            color: 'var(--color-muted)'
-          }}>
+          <div className="account-activity-placeholder">
             Aun no registras actividad. Agrega programas al carrito y confirma tu plan para comenzar.
           </div>
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <div className="button-row">
             <Link className="button primary" href="/#programas">
               Explorar programas
             </Link>
