@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useTransition } from 'react';
 
 export type AdminUserRow = {
@@ -27,6 +27,7 @@ export function AdminUsersPanel({ currentUserId, initialUsers }: AdminUsersPanel
         return;
       }
       setUsers(((payload as { users?: AdminUserRow[] }).users) ?? []);
+      setStatus(null);
     });
   }
 
@@ -42,7 +43,7 @@ export function AdminUsersPanel({ currentUserId, initialUsers }: AdminUsersPanel
         setStatus((payload as { error?: string }).error ?? 'No se pudo actualizar el rol.');
         return;
       }
-      setStatus('Usuario promovido a admin.');
+      setStatus('Usuario promovido.');
       refreshUsers();
     });
   }
@@ -66,51 +67,63 @@ export function AdminUsersPanel({ currentUserId, initialUsers }: AdminUsersPanel
   }
 
   return (
-    <div className="feature-card" style={{ display: 'grid', gap: 18 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <section className="feature-card admin-panel">
+      <div className="admin-panel-header">
         <div>
           <h2 style={{ margin: 0 }}>Usuarios del programa</h2>
           <p className="link-muted" style={{ marginTop: 4 }}>
             Gestiona roles y acceso. Solo admins pueden realizar cambios.
           </p>
         </div>
-        <button type="button" onClick={refreshUsers} className="button secondary" disabled={isPending}>
+        <button type="button" onClick={refreshUsers} className="button secondary button--compact" disabled={isPending}>
           {isPending ? 'Actualizando...' : 'Refrescar lista'}
         </button>
       </div>
-      {status && <p className="message" style={{ margin: 0 }}>{status}</p>}
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem' }}>
+      {status && <p className="admin-panel-status">{status}</p>}
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
           <thead>
-            <tr style={{ textAlign: 'left', color: 'var(--color-muted)', fontWeight: 500 }}>
-              <th style={{ padding: '12px 8px' }}>Email</th>
-              <th style={{ padding: '12px 8px' }}>Rol</th>
-              <th style={{ padding: '12px 8px' }}>Accion</th>
+            <tr>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Accion</th>
             </tr>
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id} style={{ borderTop: '1px solid rgba(124, 136, 152, 0.15)' }}>
-                <td style={{ padding: '12px 8px' }}>{user.email ?? 'Sin email'}</td>
-                <td style={{ padding: '12px 8px', textTransform: 'capitalize' }}>{user.role}</td>
-                <td style={{ padding: '12px 8px', display: 'flex', gap: 8 }}>
-                  {user.role !== 'admin' && (
-                    <button type="button" className="button secondary" onClick={() => promoteUser(user.id)} disabled={isPending}>
-                      Promover a admin
-                    </button>
-                  )}
-                  {user.id !== currentUserId && (
-                    <button type="button" className="button secondary" onClick={() => removeUser(user.id)} disabled={isPending}>
-                      Eliminar
-                    </button>
-                  )}
-                  {user.id === currentUserId && <span className="link-muted">Sesion actual</span>}
+              <tr key={user.id}>
+                <td data-label="Email">{user.email ?? 'Sin email'}</td>
+                <td data-label="Rol" style={{ textTransform: 'capitalize' }}>{user.role}</td>
+                <td data-label="Accion" className="admin-table-actions">
+                  <div className="table-actions">
+                    {user.role !== 'admin' && (
+                      <button
+                        type="button"
+                        className="button secondary button--compact"
+                        onClick={() => promoteUser(user.id)}
+                        disabled={isPending}
+                      >
+                        Promover
+                      </button>
+                    )}
+                    {user.id !== currentUserId && (
+                      <button
+                        type="button"
+                        className="button secondary button--compact"
+                        onClick={() => removeUser(user.id)}
+                        disabled={isPending}
+                      >
+                        Eliminar
+                      </button>
+                    )}
+                    {user.id === currentUserId && <span className="link-muted">Sesion actual</span>}
+                  </div>
                 </td>
               </tr>
             ))}
             {users.length === 0 && (
               <tr>
-                <td style={{ padding: '16px 8px', color: 'var(--color-muted)' }} colSpan={3}>
+                <td data-label="Sin datos" colSpan={3} className="admin-table-empty">
                   No hay usuarios registrados.
                 </td>
               </tr>
@@ -118,6 +131,6 @@ export function AdminUsersPanel({ currentUserId, initialUsers }: AdminUsersPanel
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
   );
 }
