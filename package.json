@@ -1,7 +1,7 @@
 {
   "name": "j-wfitnesscoaching",
   "version": "0.1.0",
-  "description": "- **main**: producción (Vercel Production). - **dev**: pruebas (Vercel Preview). - No commitear .env.local. Usa .env.example como plantilla para variables locales.",
+  "description": "- **main**: producci??n (Vercel Production). - **dev**: pruebas (Vercel Preview). - No commitear .env.local. Usa .env.example como plantilla para variables locales.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -23,6 +23,8 @@
   },
   "homepage": "https://github.com/dmod73/J-WFitnessCoaching#readme",
   "dependencies": {
+    "@supabase/ssr": "^0.7.0",
+    "@supabase/supabase-js": "^2.58.0",
     "next": "^15.5.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
@@ -35,3 +37,4 @@
     "typescript": "^5.9.3"
   }
 }
+
