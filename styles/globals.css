@@ -12,7 +12,7 @@
   --color-text: #f4f6fa;
   --color-muted: #98a1b3;
   --color-border: rgba(126, 140, 162, 0.28);
-  --max-width: 1320px;
+  --max-width: 1660px;
   font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
@@ -1011,6 +1011,42 @@ form.auth-form,
   }
 }
 
+@media (min-width: 1200px) {
+  .navbar {
+    padding: 24px 32px;
+  }
+
+  .nav-links {
+    gap: 26px;
+  }
+
+  .nav-links a {
+    font-size: 1.05rem;
+  }
+
+  .nav-actions-desktop {
+    gap: 24px;
+  }
+
+  .nav-cta {
+    gap: 18px;
+  }
+
+  .cart-chip {
+    padding: 10px 20px;
+    font-size: 0.96rem;
+  }
+
+  .cart-count {
+    font-size: 0.82rem;
+    padding: 4px 10px;
+  }
+
+  .logo {
+    font-size: 1.3rem;
+  }
+}
+
 @media (min-width: 1100px) {
   .account-container {
     grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
@@ -1035,7 +1071,7 @@ form.auth-form,
 
 @media (min-width: 1440px) {
   .container {
-    padding: 0 48px;
+    padding: 0 clamp(24px, 3vw, 32px);
   }
 
   .account-container {
