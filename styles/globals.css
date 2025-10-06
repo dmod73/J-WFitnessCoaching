@@ -822,7 +822,13 @@ form.auth-form,
   font-weight: 500;
 }
 
-.admin-table th,\n.admin-table td {\n  padding: 12px 10px;\n  word-break: break-word;\n  white-space: normal;\n}\n
+.admin-table th,
+.admin-table td {
+  padding: 12px 10px;
+  word-break: break-word;
+  white-space: normal;
+}
+
 
 .admin-table tbody tr {
   border-top: 1px solid rgba(124, 136, 152, 0.15);
@@ -970,6 +976,7 @@ form.auth-form,
     padding: 20px;
   }
 }
+
 
 
 
