@@ -1,4 +1,4 @@
-﻿import { createClientServer } from './supabase-server';
+import { createClientServer } from './supabase-server';
 
 export type CartSummary = {
   cartId: string | null;
@@ -21,6 +21,8 @@ export type CartItemWithCourse = {
     thumbnail_url: string | null;
     currency: string;
     price_cents: number;
+    stripe_product_id: string | null;
+    stripe_price_id: string | null;
   } | null;
 };
 
@@ -94,7 +96,9 @@ export async function getCartWithItems(userId: string): Promise<CartDetail> {
           delivery_html_url,
           thumbnail_url,
           currency,
-          price_cents
+          price_cents,
+          stripe_product_id,
+          stripe_price_id
         )
       `
     )
@@ -114,3 +118,5 @@ export async function getCartWithItems(userId: string): Promise<CartDetail> {
 
   return { cartId, items, itemCount, totalCents, currency };
 }
+
+

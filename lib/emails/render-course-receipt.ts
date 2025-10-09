@@ -1,4 +1,4 @@
-import { formatCurrency } from '@/lib/format-currency';
+﻿import { formatCurrency } from '@/lib/format-currency';
 
 type Currency = {
   code: string;
@@ -39,7 +39,7 @@ export function renderCourseReceiptHtml(context: ReceiptContext) {
             ${item.description ? `<p style="margin: 4px 0 0; color: #475569; font-size: 13px;">${item.description}</p>` : ''}
             <p style="margin: 12px 0 0;">
               <a href="${item.accessUrl}" style="color: #6366f1; text-decoration: none;">
-                Acceder al curso ?
+                Acceder al curso →
               </a>
             </p>
           </td>
@@ -64,7 +64,7 @@ export function renderCourseReceiptHtml(context: ReceiptContext) {
           <td style="background: #ffffff; padding: 28px 24px;">
             <p style="margin: 0 0 12px; color: #475569; font-size: 14px;">${buyerName ? `Hola ${buyerName},` : 'Hola,'}</p>
             <p style="margin: 0 0 18px; color: #475569; font-size: 14px;">
-              Gracias por confiar en nuestro programa. Aqu� tienes los enlaces para comenzar con tus cursos.
+              Gracias por confiar en nuestro programa. Aquí tienes los enlaces para comenzar con tus cursos.
             </p>
             <p style="margin: 0 0 6px; color: #0f172a; font-weight: 600; font-size: 14px;">Orden #${orderId}</p>
             <table width="100%" style="border-collapse: collapse; margin-top: 12px;">
@@ -92,7 +92,7 @@ export function renderCourseReceiptHtml(context: ReceiptContext) {
         <tr>
           <td style="padding: 24px; background: #f8fafc; color: #475569; font-size: 12px; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
             <p style="margin: 0 0 8px;">Si necesitas ayuda o tienes alguna duda, responde este correo o escribe a ${supportEmail ?? 'support@jwfitness.co'}.</p>
-            <p style="margin: 0;">Entrena como atleta. Vive como l�der.</p>
+            <p style="margin: 0;">Entrena como atleta. Vive como líder.</p>
           </td>
         </tr>
       </tbody>

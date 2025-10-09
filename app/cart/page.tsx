@@ -1,12 +1,26 @@
 ﻿import Link from 'next/link';
+import { StripeCheckoutButton } from '@/components/StripeCheckoutButton';
+import { CartItemsList } from '@/components/CartItemsList';
 import { getSessionWithProfile } from '@/lib/get-session';
 import { getCartWithItems } from '@/lib/cart';
-import { CartItemsList } from '@/components/CartItemsList';
+
+interface CartPageProps {
+  searchParams?: Record<string, string | string[] | undefined>;
+}
 
 export const dynamic = 'force-dynamic';
 
-export default async function CartPage() {
+function getFirstParam(value: string | string[] | undefined) {
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+  return value;
+}
+
+export default async function CartPage({ searchParams }: { searchParams?: Promise<Record<string, string | string[]>> }) {
   const { user } = await getSessionWithProfile();
+  const params = searchParams ? await searchParams : {};
+  const cancelled = getFirstParam(params.cancelled) === '1';
 
   if (!user) {
     return (
@@ -61,20 +75,23 @@ export default async function CartPage() {
           <span className="section-title">Carrito</span>
           <h1 className="cart-heading">Tus cursos guardados</h1>
           <p className="link-muted" style={{ margin: 0 }}>
-            Confirma tu seleccion y en la siguiente fase conectaremos Stripe para procesar el pago en linea.
+            Confirma tu seleccion y completa el pago seguro con Stripe para recibir el acceso inmediato a tus cursos.
           </p>
         </div>
 
         <CartItemsList items={cart.items} currency={cart.currency} totalCents={cart.totalCents} />
 
-        <div className="feature-card cart-summary">
-          <h2 style={{ margin: 0 }}>Checkout con Stripe (proximamente)</h2>
+        <div className="feature-card cart-summary" style={{ display: 'grid', gap: 16 }}>
+          <h2 style={{ margin: 0 }}>Completar compra con Stripe</h2>
           <p className="link-muted" style={{ margin: 0 }}>
-            Estamos preparando la integracion para que puedas pagar con tarjeta y recibir automaticamente tu recibo con el link HTML del curso.
+            Seras redirigido a Stripe para ingresar los datos de tu tarjeta. Al finalizar enviaremos un recibo con los enlaces HTML de los cursos.
           </p>
-          <button className="button primary" type="button" disabled style={{ opacity: 0.6 }}>
-            Finalizar compra con Stripe
-          </button>
+          <StripeCheckoutButton />
+          {cancelled && (
+            <p style={{ color: '#f87171', margin: 0 }}>
+              El checkout fue cancelado. Puedes intentarlo nuevamente cuando estes listo.
+            </p>
+          )}
           <div className="button-row">
             <Link className="button secondary" href="/#programas">
               Seguir explorando cursos
@@ -88,3 +105,6 @@ export default async function CartPage() {
     </main>
   );
 }
+
+
+

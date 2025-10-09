@@ -1,4 +1,4 @@
-import { getResendClient } from '@/lib/resend';
+﻿import { getResendClient } from '@/lib/resend';
 import { renderCourseReceiptHtml } from '@/lib/emails/render-course-receipt';
 
 type ReceiptEmailItem = {
