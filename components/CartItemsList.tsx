@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { formatCurrency } from '@/lib/format-currency';
 import type { CartItemWithCourse } from '@/lib/cart';
 
 interface CartItemsListProps {
@@ -11,14 +12,8 @@ interface CartItemsListProps {
   totalCents: number;
 }
 
-function formatCurrency(valueInCents: number, currency = 'USD') {
-  const formatter = new Intl.NumberFormat('es-ES', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 2,
-  });
-
-  return formatter.format((valueInCents ?? 0) / 100);
+function formatCurrencyFromCents(valueInCents: number, currency = 'USD') {
+  return formatCurrency({ value: (valueInCents ?? 0) / 100, currency });
 }
 
 export function CartItemsList({ items, currency, totalCents }: CartItemsListProps) {
@@ -80,8 +75,8 @@ export function CartItemsList({ items, currency, totalCents }: CartItemsListProp
     <div className="feature-card" style={{ display: 'grid', gap: 18 }}>
       {items.map((item) => {
         const course = item.course;
-        const pricePerUnit = formatCurrency(item.unit_price_cents ?? course?.price_cents ?? 0, resolvedCurrency);
-        const lineTotal = formatCurrency((item.quantity ?? 0) * (item.unit_price_cents ?? course?.price_cents ?? 0), resolvedCurrency);
+        const pricePerUnit = formatCurrencyFromCents(item.unit_price_cents ?? course?.price_cents ?? 0, resolvedCurrency);
+        const lineTotal = formatCurrencyFromCents((item.quantity ?? 0) * (item.unit_price_cents ?? course?.price_cents ?? 0), resolvedCurrency);
         const previewLabel = course?.delivery_html_url?.startsWith('/')
           ? 'Abrir contenido (acceso restringido)'
           : 'Ver vista previa';
@@ -128,7 +123,7 @@ export function CartItemsList({ items, currency, totalCents }: CartItemsListProp
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontWeight: 600 }}>Total estimado</span>
           <span style={{ fontSize: '1.2rem', fontWeight: 700 }}>
-            {formatCurrency(totalCents, resolvedCurrency)}
+            {formatCurrencyFromCents(totalCents, resolvedCurrency)}
           </span>
         </div>
         <p className="link-muted" style={{ margin: 0 }}>
@@ -141,3 +136,4 @@ export function CartItemsList({ items, currency, totalCents }: CartItemsListProp
     </div>
   );
 }
+
