@@ -3,11 +3,7 @@ import type Stripe from 'stripe';
 import { stripe } from '@/lib/stripe';
 import { getAdminClient } from '@/lib/supabase-admin';
 import { sendCourseReceiptEmail } from '@/lib/emails/send-course-receipt';
-const STRIPE_WEBHOOK_SECRET: string = process.env.STRIPE_WEBHOOK_SECRET ?? '';
-
-if (!STRIPE_WEBHOOK_SECRET) {
-  throw new Error('Falta STRIPE_WEBHOOK_SECRET en las variables de entorno.');
-}
+const STRIPE_WEBHOOK_SECRET: string | undefined = process.env.STRIPE_WEBHOOK_SECRET;
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -177,6 +173,11 @@ export async function POST(request: NextRequest) {
 
   const payload = await request.text();
   const signature = signatureHeader ?? '';
+
+  if (!STRIPE_WEBHOOK_SECRET) {
+    console.error('[stripe-webhook] STRIPE_WEBHOOK_SECRET no configurado');
+    return NextResponse.json({ error: 'Webhook no configurado' }, { status: 500 });
+  }
 
   let event: Stripe.Event;
 
