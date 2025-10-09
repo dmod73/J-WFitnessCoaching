@@ -1,6 +1,7 @@
 const SUPABASE_URL_DIRECT: string | undefined = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
 const SUPABASE_ANON_KEY: string | undefined = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY;
 const SUPABASE_SERVICE_ROLE_KEY: string | undefined = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const EXPLICIT_APP_URL: string | undefined = process.env.NEXT_PUBLIC_APP_URL ?? process.env.APP_URL ?? process.env.VERCEL_URL;
 
 function decodeBase64Url(segment: string): string {
   const normalized = segment.replace(/-/g, '+').replace(/_/g, '/');
@@ -62,4 +63,13 @@ export function resolveServiceRoleKey(): string {
     throw new Error('Falta SUPABASE_SERVICE_ROLE_KEY en el entorno del servidor.');
   }
   return SUPABASE_SERVICE_ROLE_KEY;
+}
+
+export function resolveAppUrl(): string {
+  if (EXPLICIT_APP_URL && EXPLICIT_APP_URL.length > 0) {
+    const normalized = EXPLICIT_APP_URL.startsWith('http') ? EXPLICIT_APP_URL : `https://${EXPLICIT_APP_URL}`;
+    return normalized.replace(/\/+$/, '');
+  }
+
+  return 'http://localhost:3000';
 }

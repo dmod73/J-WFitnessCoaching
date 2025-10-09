@@ -18,7 +18,13 @@ function isMissingRefreshToken(error: AuthError | null): boolean {
     return false;
   }
 
-  return error.code === 'refresh_token_not_found' || error.message.includes('Refresh Token Not Found');
+  const message = typeof error.message === 'string' ? error.message.toLowerCase() : '';
+
+  return (
+    error.code === 'refresh_token_not_found' ||
+    message.includes('refresh token not found') ||
+    message.includes('auth session missing')
+  );
 }
 
 async function getAuthenticatedUser() {

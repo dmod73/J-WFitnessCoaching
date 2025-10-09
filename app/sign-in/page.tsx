@@ -1,42 +1,73 @@
 'use client';
-import { useState } from 'react';
+
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+
+type MessageVariant = 'info' | 'error' | 'success';
 
 export default function SignInPage() {
-  const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [message, setMessage] = useState<string | null>(null);
+  const [messageVariant, setMessageVariant] = useState<MessageVariant>('info');
   const [loading, setLoading] = useState(false);
+  const noticeAppliedRef = useRef(false);
+
+  useEffect(() => {
+    if (noticeAppliedRef.current) {
+      return;
+    }
+
+    if (searchParams.get('registered')) {
+      setMessage('Tu cuenta fue creada. Te enviaremos un enlace seguro para activar tu acceso.');
+      setMessageVariant('info');
+      noticeAppliedRef.current = true;
+    } else if (searchParams.get('error') === 'verification_failed') {
+      setMessage('El enlace de verificacion expiro o ya fue utilizado. Solicita uno nuevo para ingresar.');
+      setMessageVariant('error');
+      noticeAppliedRef.current = true;
+    }
+  }, [searchParams]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage(null);
+    setMessageVariant('info');
     setLoading(true);
 
     try {
       const response = await fetch('/api/auth/sign-in', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email }),
       });
 
       const payload = (await response.json().catch(() => null)) ?? {};
 
       if (!response.ok) {
-        setMessage((payload as { error?: string }).error ?? 'No pudimos iniciar sesion.');
+        setMessage((payload as { error?: string }).error ?? 'No pudimos enviar el enlace.');
+        setMessageVariant('error');
         return;
       }
 
-      router.replace('/account');
-      router.refresh();
+      const successMessage = (payload as { message?: string }).message ??
+        'Hemos enviado un enlace de acceso. Revisa tu correo para completar el inicio de sesion.';
+      setMessage(successMessage);
+      setMessageVariant('success');
     } catch (error) {
       setMessage('No pudimos conectar con el servidor.');
+      setMessageVariant('error');
     } finally {
       setLoading(false);
     }
   }
+
+  const messageClassName = messageVariant === 'error'
+    ? 'message'
+    : messageVariant === 'success'
+      ? 'message message--success'
+      : 'message message--info';
 
   return (
     <main className="section" style={{ display: 'grid', placeItems: 'center', minHeight: 'calc(100vh - 160px)' }}>
@@ -45,7 +76,7 @@ export default function SignInPage() {
           <span className="section-title">Bienvenido de regreso</span>
           <h1>Iniciar sesion</h1>
           <p className="link-muted" style={{ marginTop: 4 }}>
-            Ingresa con tu correo y contrasena para acceder al panel y tu plan personalizado.
+            Ingresa tu correo y enviaremos un enlace seguro que completara tu acceso.
           </p>
         </div>
         <label className="input-label">
@@ -60,21 +91,9 @@ export default function SignInPage() {
             autoComplete="email"
           />
         </label>
-        <label className="input-label">
-          Contrasena
-          <input
-            className="input-field"
-            placeholder="********"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            required
-            autoComplete="current-password"
-          />
-        </label>
-        {message && <div className="message">{message}</div>}
+        {message && <div className={messageClassName}>{message}</div>}
         <button type="submit" disabled={loading} className="button primary">
-          {loading ? 'Ingresando...' : 'Entrar'}
+          {loading ? 'Enviando enlace...' : 'Solicitar enlace'}
         </button>
         <p>
           Aun no tienes cuenta? <Link href="/sign-up">Crear cuenta</Link>

@@ -1,9 +1,54 @@
 ﻿import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import { ReviewsCarousel } from '@/components/ReviewsCarousel';
 import { HeroSessionCarousel } from '@/components/HeroSessionCarousel';
 import { CourseCatalog, type CourseCatalogItem } from '@/components/CourseCatalog';
 import { createClientServer } from '@/lib/supabase-server';
 import { getSessionWithProfile } from '@/lib/get-session';
+
+
+type SearchParamsRecord = Record<string, string | string[] | undefined>
+
+function resolveRedirectBase(searchParams?: SearchParamsRecord): string | null {
+  const pickFirst = (value?: string | string[]): string | null => {
+    if (!value) return null;
+    return Array.isArray(value) ? value[0] ?? null : value;
+  };
+
+  return pickFirst(searchParams?.redirect_base);
+}
+
+function resolveNextTarget(searchParams?: SearchParamsRecord): string {
+  const pickFirst = (value?: string | string[]): string | null => {
+    if (!value) return null;
+    return Array.isArray(value) ? value[0] ?? null : value;
+  };
+
+  const directNext = pickFirst(searchParams?.next);
+  if (directNext) {
+    return directNext;
+  }
+
+  const redirectToParam = pickFirst(searchParams?.redirect_to);
+  if (!redirectToParam) {
+    return '/account';
+  }
+
+  try {
+    const redirectUrl = new URL(redirectToParam);
+    const nestedNext = redirectUrl.searchParams.get('next');
+    if (nestedNext) {
+      return nestedNext;
+    }
+
+    const composedPath = `${redirectUrl.pathname}${redirectUrl.search}`;
+    return composedPath === '' ? '/account' : composedPath;
+  } catch (error) {
+    console.error('[home] No pudimos interpretar redirect_to:', error instanceof Error ? error.message : error);
+    return '/account';
+  }
+}
 
 const features = [
   {
@@ -36,7 +81,28 @@ async function getActiveCourses(): Promise<CourseCatalogItem[]> {
   return data ?? [];
 }
 
-export default async function Page() {
+export default async function Page({ searchParams }: { searchParams?: Promise<SearchParamsRecord> }) {
+  const resolvedSearchParams = (await searchParams) ?? {};
+  const rawCode = resolvedSearchParams.code;
+  const codeParam = typeof rawCode === 'string' ? rawCode : Array.isArray(rawCode) ? rawCode[0] ?? null : null;
+  const redirectBase = resolveRedirectBase(resolvedSearchParams);
+  const headerList = await headers();
+  const protocol = headerList.get('x-forwarded-proto') ?? 'http';
+  const host = headerList.get('host') ?? 'localhost';
+  const currentOrigin = `${protocol}://${host}`;
+
+  if (codeParam) {
+    const nextTarget = resolveNextTarget(resolvedSearchParams);
+    const redirectParams = new URLSearchParams({ code: codeParam, next: nextTarget });
+    const redirectQuery = redirectParams.toString();
+
+    if (redirectBase && redirectBase.length > 0 && redirectBase !== currentOrigin) {
+      redirect(`${redirectBase}/api/auth/callback?${redirectQuery}`);
+    }
+
+    redirect(`/api/auth/callback?${redirectQuery}`);
+  }
+
   const [courses, sessionResult] = await Promise.all([getActiveCourses(), getSessionWithProfile()]);
   const isAuthenticated = Boolean(sessionResult.user);
 

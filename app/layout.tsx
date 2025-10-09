@@ -2,6 +2,7 @@
 import type { ReactNode } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
+import { AuthCodeHandler } from '@/components/AuthCodeHandler';
 import { getSessionWithProfile } from '@/lib/get-session';
 import { getCartSummary } from '@/lib/cart';
 import '../styles/globals.css';
@@ -27,6 +28,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   return (
     <html lang="es">
       <body>
+        <AuthCodeHandler />
         <Navbar session={session} cartCount={cartCount} />
         {children}
         <Footer />

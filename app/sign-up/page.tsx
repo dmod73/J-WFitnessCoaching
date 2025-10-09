@@ -36,8 +36,7 @@ export default function SignUpPage() {
         return;
       }
 
-      router.replace('/account');
-      router.refresh();
+      router.replace('/sign-in?registered=1');
     } catch (error) {
       setMessage('No pudimos conectar con el servidor.');
     } finally {
